@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: $name
+  labels:
+    app: $labelName
+spec:
+  selector:
+    matchLabels:
+      app: $labelName
+  template:
+    metadata:
+      labels:
+        app: $labelName
+    spec:
+      containers:
+      - name: $labelName
+        image: $imageName
+        env:
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: "$specificGpu"
+        args: ["sh", "-c", "tail -f /dev/null"]
+        resources:
+          limits:
+            nvidia.com/gpu: $gpuCount
+        volumeMounts:
+#foreach($volume in $volumeList)
+        - mountPath: $volume.volumeMountPath
+          name: $volume.volumeName
+#end
+      nodeName: $nodeName
+      volumes:
+#foreach($volume in $volumeList)
+      - name: $volume.volumeName
+        hostPath:
+          path: $volume.volumePath
+          type: $volume.volumeType
+#end      

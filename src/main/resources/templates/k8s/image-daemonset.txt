@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: $name
+spec:
+  selector:
+    matchLabels:
+      name: $labelName
+  template:
+    metadata:
+      labels:
+        name: $labelName
+    spec:
+      initContainers:
+      - name: $name
+        image: docker
+        command: ["docker", "pull", "$imageName:$imageTag"]
+        volumeMounts:
+        - name: docker
+          mountPath: /var/run
+      volumes:
+      - name: docker
+        hostPath:
+          path: /var/run
+      containers:
+      - name: empty
+        image: $imageName:$imageTag
+        imagePullPolicy: IfNotPresent

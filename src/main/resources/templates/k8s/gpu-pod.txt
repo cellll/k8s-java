@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: $podName
+  labels:
+    app: $labelName
+spec:
+  containers:
+  - name: $labelName
+    image: $imageName
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: NVIDIA_VISIBLE_DEVICES
+      value: "$specificGpu"
+#if( $horovodPort )
+    - name: HOROVOD_PORT 
+      value: $horovodPort
+#end
+    command:
+    - "/bin/bash"
+    - "-c"
+    args: ["tail -f /dev/null"]
+    resources:
+      limits:
+        nvidia.com/gpu: $gpuCount
+    volumeMounts:
+#foreach($volume in $volumeList)
+    - mountPath: $volume.volumeMountPath
+      name: $volume.volumeName
+      readOnly: $volume.readOnly
+#if ( $volume.subPath )
+      subPath: $volume.subPath
+#end
+#end
+  nodeName: $nodeName
+#if( $multiNode )
+  hostNetwork: true
+#end
+  volumes:
+#foreach($volume in $volumeList)
+  - name: $volume.volumeName
+    persistentVolumeClaim:
+      claimName: $volume.claimName
+#end
