@@ -93,5 +93,40 @@ public class YamlManifestMaker {
     	
     	return res;
     }
+    
+    public String makePVManifest(String name, String storage, String pvcName, String namespace, String nfsServerIp, String nfsPath) {
+    	
+    	VelocityContext context = new VelocityContext();
+    	context.put("name", name);
+    	context.put("storage", storage);
+    	context.put("pvcName", pvcName);
+    	context.put("namespace", namespace);
+    	context.put("nfsServerIp", nfsServerIp);
+    	context.put("nfsPath", nfsPath);
+    	
+    	Template t = ve.getTemplate("templates/k8s/user-pv.txt");
+    	StringWriter writer = new StringWriter();
+    	t.merge(context,  writer);
+    	String res = writer.toString();
+    	System.out.println(res);
+    	
+    	return res;
+    }
+    
+    public String makePvcManifest(String pvcName, String storage) {
+    	
+    	VelocityContext context = new VelocityContext();
+    	context.put("pvcName", pvcName);
+    	context.put("storage", storage);
+    	
+    	Template t = ve.getTemplate("templates/k8s/user-pvc.txt");
+    	StringWriter writer = new StringWriter();
+    	t.merge(context, writer);
+    	String res = writer.toString();
+    	System.out.println(res);
+    	
+    	return res;
+    }
+    
 
 }
