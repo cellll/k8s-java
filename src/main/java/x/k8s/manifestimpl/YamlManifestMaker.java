@@ -75,7 +75,7 @@ public class YamlManifestMaker {
         String res = writer.toString();
         System.out.println(res);
         return res;
-    }
+    } 
     
     public String makeImageDaemonsetManifest(String name, String labelName, String imageName, String imageTag) {
     	
