@@ -11,16 +11,16 @@ public class YamlPersistentVolumeClaimManifest extends PersistentVolumeClaimMani
 	
 	private YamlManifestMaker manifestMaker = new YamlManifestMaker();
 	
-	public YamlPersistentVolumeClaimManifest(String pvcName,  String storage) {
+	public YamlPersistentVolumeClaimManifest(String pvcName, String accessModes, String storage) {
 		// TODO Auto-generated constructor stub
-		super(pvcName, storage);
+		super(pvcName, accessModes, storage);
 	}
 	
 	@Override
 	public V1PersistentVolumeClaim getPersistentVolumeClaim() throws IOException {
 		// TODO Auto-generated method stub
 		
-		String pvcManifest = manifestMaker.makePvcManifest(pvcName, storage);
+		String pvcManifest = manifestMaker.makePvcManifest(pvcName, accessModes, storage);
 		return (V1PersistentVolumeClaim) Yaml.load(pvcManifest);
 		
 	}

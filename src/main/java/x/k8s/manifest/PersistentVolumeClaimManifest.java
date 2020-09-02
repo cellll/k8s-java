@@ -8,12 +8,14 @@ import io.kubernetes.client.openapi.models.V1PersistentVolumeClaim;
 public abstract class PersistentVolumeClaimManifest {
 	
 	protected String pvcName;
+	protected String accessModes;
 	protected String storage;
 	
 	
-	public PersistentVolumeClaimManifest(String pvcName, String storage) {
+	public PersistentVolumeClaimManifest(String pvcName, String acceessModes, String storage) {
 		
 		this.pvcName = pvcName;
+		this.accessModes = acceessModes;
 		this.storage = storage;
 		
 	}

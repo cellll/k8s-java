@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: $pvName
+spec:
+  capacity:
+    storage: $storage
+  accessModes:
+    - $accessModes
+  claimRef:
+    namespace: $namespace
+    name: $pvcName
+#if ( $scName )    
+  storageClassName: $scName
+#end
+#if ( $pvType == "nfs" )
+  nfs:
+    server: $nfsServerIp
+    path: $nfsPath
+#elseif ( $pvType == "local" )
+  local:
+    path: $localPath
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - $hostName  
+#else
+#end

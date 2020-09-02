@@ -15,118 +15,126 @@ public class YamlManifestMaker {
 
 	private VelocityEngine ve;
 
-    public YamlManifestMaker() {
-    	Properties p = new Properties();
-    	p.setProperty("resource.loader", "class");
-    	p.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-    	
-        ve = new VelocityEngine();
-        ve.init(p);
-    }
+	public YamlManifestMaker() {
+		Properties p = new Properties();
+		p.setProperty("resource.loader", "class");
+		p.setProperty("class.resource.loader.class",
+				"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
-    public String makeGpuDeploymentManifest(String deploymentName, String labelName, String imageName, String gpuCount, String specificGpu, String nodeName, List<K8sVolumeVO> volumeList) {
-        VelocityContext context = new VelocityContext();
-        context.put("name", deploymentName);
-        context.put("labelName", labelName);
-        context.put("gpuCount", gpuCount);
-        context.put("imageName", imageName);
-        context.put("specificGpu", specificGpu);
-        context.put("nodeName", nodeName);
-        context.put("volumeList", volumeList);
-        
+		ve = new VelocityEngine();
+		ve.init(p);
+	}
 
-        Template t = ve.getTemplate("templates/k8s/gpu-deployment.txt");
-        StringWriter writer = new StringWriter();
-        t.merge(context, writer);
-        String res = writer.toString();
-        System.out.println(res);
-        return res;
-    }
+	public String makeGpuDeploymentManifest(String deploymentName, String labelName, String imageName, String gpuCount,
+			String specificGpu, String nodeName, List<K8sVolumeVO> volumeList) {
+		VelocityContext context = new VelocityContext();
+		context.put("name", deploymentName);
+		context.put("labelName", labelName);
+		context.put("gpuCount", gpuCount);
+		context.put("imageName", imageName);
+		context.put("specificGpu", specificGpu);
+		context.put("nodeName", nodeName);
+		context.put("volumeList", volumeList);
 
-    public String makeGpuServiceManifest(String serviceName, String labelName, List<K8sPortVO> ports) {
-        VelocityContext context = new VelocityContext();
-        context.put("name", serviceName);
-        context.put("labelName", labelName);
-        context.put("ports", ports);
-        Template t = ve.getTemplate("templates/k8s/gpu-service.txt");
-        StringWriter writer = new StringWriter();
-        t.merge(context, writer);
-        String res = writer.toString();
-        System.out.println(res);
-        return res;
+		Template t = ve.getTemplate("templates/k8s/gpu-deployment.txt");
+		StringWriter writer = new StringWriter();
+		t.merge(context, writer);
+		String res = writer.toString();
+		System.out.println(res);
+		return res;
+	}
 
-    }
+	public String makeGpuServiceManifest(String serviceName, String labelName, List<K8sPortVO> ports) {
+		VelocityContext context = new VelocityContext();
+		context.put("name", serviceName);
+		context.put("labelName", labelName);
+		context.put("ports", ports);
+		Template t = ve.getTemplate("templates/k8s/gpu-service.txt");
+		StringWriter writer = new StringWriter();
+		t.merge(context, writer);
+		String res = writer.toString();
+		System.out.println(res);
+		return res;
 
-    public String makePodManifest(String podName, String labelName, String specificGpu, String gpuCount, String imageName, String nodeName, List<K8sVolumeVO> volumeList, boolean isMultiNode, String horovodPort) {
-    	VelocityContext context = new VelocityContext();
-    	context.put("podName", podName);
-        context.put("labelName", labelName);
-        context.put("gpuCount", gpuCount);
-        context.put("specificGpu", specificGpu);
-        context.put("imageName", imageName);
-        context.put("nodeName", nodeName);
-        context.put("volumeList", volumeList);
-        context.put("multiNode", isMultiNode);
-        context.put("horovodPort", horovodPort);
-    	
-        Template t = ve.getTemplate("templates/k8s/gpu-pod.txt");
-        StringWriter writer = new StringWriter();
-        t.merge(context, writer);
-        String res = writer.toString();
-        System.out.println(res);
-        return res;
-    } 
-    
-    public String makeImageDaemonsetManifest(String name, String labelName, String imageName, String imageTag) {
-    	
-    	VelocityContext context = new VelocityContext();
-    	context.put("name", name);
-    	context.put("labelName", labelName);
-    	context.put("imageName", imageName);
-    	context.put("imageTag", imageTag);
-    	
-    	Template t = ve.getTemplate("templates/k8s/image-daemonset.txt");
-    	StringWriter writer = new StringWriter();
-    	t.merge(context, writer);
-    	String res = writer.toString();
-    	System.out.println(res);
-    	
-    	return res;
-    }
-    
-    public String makePVManifest(String name, String storage, String pvcName, String namespace, String nfsServerIp, String nfsPath) {
-    	
-    	VelocityContext context = new VelocityContext();
-    	context.put("name", name);
-    	context.put("storage", storage);
-    	context.put("pvcName", pvcName);
-    	context.put("namespace", namespace);
-    	context.put("nfsServerIp", nfsServerIp);
-    	context.put("nfsPath", nfsPath);
-    	
-    	Template t = ve.getTemplate("templates/k8s/user-pv.txt");
-    	StringWriter writer = new StringWriter();
-    	t.merge(context,  writer);
-    	String res = writer.toString();
-    	System.out.println(res);
-    	
-    	return res;
-    }
-    
-    public String makePvcManifest(String pvcName, String storage) {
-    	
-    	VelocityContext context = new VelocityContext();
-    	context.put("pvcName", pvcName);
-    	context.put("storage", storage);
-    	
-    	Template t = ve.getTemplate("templates/k8s/user-pvc.txt");
-    	StringWriter writer = new StringWriter();
-    	t.merge(context, writer);
-    	String res = writer.toString();
-    	System.out.println(res);
-    	
-    	return res;
-    }
-    
+	}
+
+	public String makePodManifest(String podName, String labelName, String specificGpu, String gpuCount,
+			String imageName, String nodeName, List<K8sVolumeVO> volumeList, boolean isMultiNode, String horovodPort) {
+		VelocityContext context = new VelocityContext();
+		context.put("podName", podName);
+		context.put("labelName", labelName);
+		context.put("gpuCount", gpuCount);
+		context.put("specificGpu", specificGpu);
+		context.put("imageName", imageName);
+		context.put("nodeName", nodeName);
+		context.put("volumeList", volumeList);
+		context.put("multiNode", isMultiNode);
+		context.put("horovodPort", horovodPort);
+
+		Template t = ve.getTemplate("templates/k8s/gpu-pod.txt");
+		StringWriter writer = new StringWriter();
+		t.merge(context, writer);
+		String res = writer.toString();
+		System.out.println(res);
+		return res;
+	}
+
+	public String makeImageDaemonsetManifest(String name, String labelName, String imageName, String imageTag) {
+
+		VelocityContext context = new VelocityContext();
+		context.put("name", name);
+		context.put("labelName", labelName);
+		context.put("imageName", imageName);
+		context.put("imageTag", imageTag);
+
+		Template t = ve.getTemplate("templates/k8s/image-daemonset.txt");
+		StringWriter writer = new StringWriter();
+		t.merge(context, writer);
+		String res = writer.toString();
+		System.out.println(res);
+
+		return res;
+	}
+
+	public String makePvManifest(String pvName, String storage, String accessModes, String pvcName, String scName, String namespace,
+			String pvType, String nfsServerIp, String nfsPath, String localPath, String hostName) {
+
+		VelocityContext context = new VelocityContext();
+		context.put("pvName", pvName);
+		context.put("storage", storage);
+		context.put("accessModes", accessModes);
+		context.put("namespace", namespace);
+		context.put("pvcName", pvcName);
+		context.put("scName", scName);
+		context.put("pvType", pvType);
+		context.put("nfsServerIp", nfsServerIp);
+		context.put("nfsPath", nfsPath);
+		context.put("localPath", localPath);
+		context.put("hostName", hostName);
+
+		Template t = ve.getTemplate("templates/k8s/pv.txt");
+		StringWriter writer = new StringWriter();
+		t.merge(context, writer);
+		String res = writer.toString();
+		System.out.println(res);
+
+		return res;
+	}
+
+	public String makePvcManifest(String pvcName, String accessModes, String storage) {
+
+		VelocityContext context = new VelocityContext();
+		context.put("pvcName", pvcName);
+		context.put("accessModes", accessModes);
+		context.put("storage", storage);
+
+		Template t = ve.getTemplate("templates/k8s/pvc.txt");
+		StringWriter writer = new StringWriter();
+		t.merge(context, writer);
+		String res = writer.toString();
+		System.out.println(res);
+
+		return res;
+	}
 
 }
